@@ -1,0 +1,25 @@
+name: Trigger
+on:
+  schedule:
+    - cron: "3,18,32,45,57 * * * *"
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Request an API to render.com
+        env:
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+          SERVICE_ID: ${{ secrets.SERVICE_ID }}
+        run: |
+          curl --request POST \
+            --url https://api.render.com/v1/services/$SERVICE_ID/deploys \
+            --header "Accept: application/json" \
+            --header "Authorization: Bearer $BEARER_TOKEN" \
+            --header "Content-Type: application/json" \
+            --data '
+              {
+                "clearCache": "do_not_clear"
+              }
+            '
